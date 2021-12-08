@@ -46,7 +46,7 @@ run_main:				# the function gets from the user the info of two Pstrings and an o
     movq    %rbp, %rsp			# restoring the old stack pointer.
     popq    %rbp			# restoring the old frame pointer.
     xorq    %rax, %rax			# %rax = 0
-    ret			            # finish
+    ret			                # finish
     
     
 
