@@ -4,16 +4,16 @@ print_invalid_input:				.string "invalid input!\n"
 
 .text						# the beginning of the code
 
-.global pstrlen				# defining the label “pstrlen”
+.global pstrlen				        # defining the label “pstrlen”
 .type pstrlen, @function			# defining “pstrlen” as function
 pstrlen:					# the function gets a pointer to Pstring and returns the len of the string
     pushq   %rbp				# saving the old frame pointer
     movq    %rsp, %rbp          		# creating the new frame pointer
     xorq    %rax, %rax				# %rax = 0
-    movb    (%rdi), %al			# set the len of the string to %rax
+    movb    (%rdi), %al			        # set the len of the string to %rax
     movq    %rbp, %rsp				# restoring the old stack pointer
     pop     %rbp				# restoring the old frame pointer
-    ret					# finish
+    ret					        # finish
  
 .global replaceChar				# defining the label “replaceChar”
 .type replaceChar, @function			# defining “replaceChar” as function
@@ -40,7 +40,7 @@ replaceChar:					# the function gets a pointer to Pstring, an old char and a new
     movq    %rdi, %rax          		# set new Pstring as return value
     movq    %rbp, %rsp				# restoring the old stack pointer
     pop     %rbp				# restoring the old frame pointer
-    ret					# finish
+    ret					        # finish
     
 .global pstrijcpy				# defining the label “pstrijcpy”
 .type pstrijcpy, @function			# defining “pstrijcpy” as function
@@ -90,7 +90,7 @@ pstrijcpy:					# the function gets two pointers to Pstring and two index and cop
     movq    %rdx, %rax          		# set the address of dst as return value
     movq    %rbp, %rsp				# restoring the old stack pointer
     pop     %rbp				# restoring the old frame pointer
-    ret					# finish
+    ret					        # finish
 
 .global swapCase				# defining the label “swapCase”
 .type swapCase, @function			# defining “swapCase” as function
@@ -98,6 +98,7 @@ swapCase:					# the function gets a pointer to Pstring and replaces every capita
 						# every lower case letter to capital letter
     pushq   %rbp				# saving the old frame pointer
     movq    %rsp, %rbp          		# creating the new frame pointer
+    push    %r12				# push %r12 into the stack
     
     movq    %rdi,%r10           		# set the address of the Pstring to %r10
     xorq    %r11,%r11				# %r11 = 0
@@ -137,9 +138,10 @@ swapCase:					# the function gets a pointer to Pstring and replaces every capita
     
     .finish_swap:
     movq    %r10, %rax				# set new Pstring as return value
+    pop     %r12				# pop %r12 from the stack
     movq    %rbp, %rsp				# restoring the old stack pointer
     pop     %rbp				# restoring the old frame pointer
-    ret					# finish
+    ret					        # finish
     
 .global pstrijcmp				# defining the label “pstrijcmp”
 .type pstrijcmp, @function			# defining “pstrijcmp” as function
@@ -147,6 +149,8 @@ pstrijcmp:					# the function gets two pointers to Pstring and two index and com
 						# of the first Pstring to the subString(i,j) of the second Pstring
     pushq   %rbp				# saving the old frame pointer
     movq    %rsp, %rbp				# creating the new frame pointer
+    push    %r12				# push %r12 into the stack
+    push    %r13				# push %r13 into the stack
     
     movq    %rcx, %r10				# set j to %r10
     addq    $1,%r10				# adding 1 to j
@@ -174,7 +178,7 @@ pstrijcmp:					# the function gets two pointers to Pstring and two index and com
     xorq    %r13,%r13				# %r13 = 0
     movb    (%r10),%r12b			# set pstr1[i] in %r12
     movb    (%r11),%r13b			# set pstr2[i] in %r13
-    cmp     %r12b,%r13b			# compare pstr2[i] : pstr1[i]
+    cmp     %r12b,%r13b				# compare pstr2[i] : pstr1[i]
     jl  .pstr1_bigger				# if <, goTo pstr1_bigger
     jg  .pstr2_bigger				# if >, goTo pstr2_bigger
     je  .continue				# if =, goTo continue
@@ -200,12 +204,14 @@ pstrijcmp:					# the function gets two pointers to Pstring and two index and com
     jmp .finish_cmp				# goTo finish_cmp
     
     .invalid_input_cmp:
-    movq    $print_invalid_input, %rdi	# set the print format as the first parameter of printf
+    movq    $print_invalid_input, %rdi		# set the print format as the first parameter of printf
     xorq    %rax, %rax				# %rax = 0
     call    printf				# call the function printf
     movq    $-2,%rax				# %rax = -2
     
     .finish_cmp:
+    pop     %r13				# pop %r13 from the stack
+    pop     %r12				# pop %r12 from the stack
     movq    %rbp, %rsp				# restoring the old stack pointer
     pop     %rbp				# restoring the old frame pointer
-    ret					# finish
+    ret					        # finish
